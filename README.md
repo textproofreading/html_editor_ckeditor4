@@ -1,0 +1,2 @@
+# html_editor_ckeditor4
+html_editor_ckeditor4 错别字和编辑器集成的接口API例子
