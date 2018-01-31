@@ -30,6 +30,22 @@ span {
 <h2>静态网页客户端---测试版本只能测试500个汉字。</h2>
 -->
 <hr />
+<div id="id_kanwu_div">
+<table  border="1" id="id_kanwu" name="name_kanwu" >
+	<!--
+<th>
+	<td>ID</td>
+	<td>错误词</td>
+	<td>正确词</td>
+</th>
+-->
+<tbody>
+	
+</tbody>
+</table>
+</div>
+<hr />
+
 
 <form id="jcjc_cuobiezi_form" method="post" action="/">
 
@@ -106,6 +122,13 @@ function sortNumber(a,b) {
 	})
 
 	$("#btn_click_clear_format").click(function(){
+
+
+		$("#id_kanwu_div").empty();
+
+		$("#id_kanwu_div").hide();
+
+
 		var find = 'color:red';
 		var re = new RegExp(find, 'g');
 		
@@ -185,6 +208,9 @@ function sortNumber(a,b) {
 
 		pos_arr.sort(sortNumber);
 
+		$('#id_kanwu > tbody:last-child').append('<tr><td >ID</td><td>错误词</td><td>正确词</td></tr>');
+
+
 		var new_conent_raw = "";
 		var _tmp_start_pos = 0;
 		var arrayLength = pos_arr.length;
@@ -192,10 +218,16 @@ function sortNumber(a,b) {
 			if( pos_arr[i] >= len_total ){
 				continue;
 			}
+
+
+
 			var str_tmp = content_raw.substring(_tmp_start_pos, pos_arr[i])
 			new_conent_raw = new_conent_raw + str_tmp;
 
 			var _tmp_obj = unique_pos_dict[ pos_arr[i] ];
+
+			$('#id_kanwu > tbody:last-child').append('<tr><td >'+ i +'</td><td>'+ _tmp_obj.Error +'</td><td>' + _tmp_obj.Tips +  '</td></tr>');
+
 
 			var _tmp_sub_len = _tmp_obj.WordsLen;
 			//alert(_tmp_obj.ReviewWords + _tmp_obj.Error);
@@ -230,6 +262,9 @@ function sortNumber(a,b) {
 
 
 	$("#btn_click_submit").click(function(){
+
+		$("#id_kanwu_div").show();
+
 
 		var content_raw ;
 		content_raw =  CKEDITOR.instances.editor.getData();
