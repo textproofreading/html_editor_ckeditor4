@@ -1,0 +1,325 @@
+<html>
+
+<head>
+<meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+ <title>人工智能错别字检测系统</title>
+	
+</head>
+
+	<script src="./jcjc_ckeditor.js"></script>
+<script src="./jquery-3.1.1.min.js">
+</script>
+
+<style>
+
+span {
+    color: red;
+}
+
+</style>
+<body>
+
+<a href="http://www.cuoBiezi.net" target="_bland"><h1>JcJc人工智能错别字检测系统</h1></a>
+<!--
+<h2>静态网页客户端---测试版本只能测试500个汉字。</h2>
+-->
+<hr />
+<div id="id_kanwu_div">
+<table  border="1" id="id_kanwu" name="name_kanwu" >
+	<!--
+<th>
+	<td>ID</td>
+	<td>错误词</td>
+	<td>正确词</td>
+</th>
+-->
+<tbody>
+	
+</tbody>
+</table>
+</div>
+<hr />
+
+
+<form id="jcjc_cuobiezi_form" method="post" action="/">
+
+<!--
+用户名:<input type="text" id="username">
+密码:<input type="password" id="password">  (测试不需要用户名密码)
+-->
+<textarea name="content" id="editor" rows="15" cols="80">    “反腐倡廉”错写成“友腐倡廉” 
+    “财政局长”错写成“败政局长”
+    “十八大”错写成“十八人”、“十八太”
+    “信息公开”错写成“信臭公开”
+    “扶贫工作”错写成“扶贪工作”
+    “财政局长”错写成“败政局长”
+    “全国人大”写成“全国大人；
+    省人大”写成省大人” 、
+    “人大常委会”写成“大人常委会”
+    “领导小组”写成“领导小姐”；
+    “组长”错写成“姐长”
+    “共产党”写成“共产常”，
+	“中国共产党”写成“中华共产党”</textarea>
+
+<script>
+
+	  var myEditor;
+
+	</script>
+
+	<hr />
+	右下角可以调整窗口大小
+	<br />
+	<input type="submit" id="btn_click_submit" value="JcJc检查错别字">
+
+	<input type="button" id="btn_click_clear_format" value="清除格式">
+	<input type="button" id="btn_click_clear_text" value="清空文字">
+
+
+</form>
+
+
+<hr />
+
+<br />
+技术支持:
+<a href="http://www.cuobiezi.net/public/static/pages/more_money_more_service.html" target="_blank" class="btn btn-default btn-lg">
+                                <i class="fa fa-github fa-fw"></i>
+                                <span class="network-name">QQ</span></a>
+
+
+
+
+
+<script>
+	
+$("#jcjc_cuobiezi_form").on('submit', function(event){
+
+	return false;
+
+
+  event.preventDefault();
+  var this_ = $(this)
+  var gb_endpoint = this_.attr("data-href")
+  
+
+}
+  );
+
+function sortNumber(a,b) {
+    return a - b;
+}
+
+	
+	$("#btn_click_clear_text").click(function(){
+		CKEDITOR.instances.editor.setData('');
+	})
+
+	$("#btn_click_clear_format").click(function(){
+
+		$("#id_kanwu_div").empty();
+
+		$("#id_kanwu_div").hide();
+
+	})
+
+
+	function __process_cases(json_obj,len_total,content_raw){
+
+		//if (json_obj.successed == false){
+		//	return
+		//}
+
+		var pos_arr = [];
+		var unique_pos_dict = {};
+
+		var len_tmp = 0;
+
+		if(json_obj.hasOwnProperty('Cases')){
+			if(null != json_obj.Cases && json_obj.Cases.hasOwnProperty('length')){
+
+				var len_tmp  = json_obj.Cases.length;
+				if (len_tmp <=0 ){
+					//return
+				}
+
+				var _tmp_i = 0 ;
+				for (;_tmp_i < len_tmp; _tmp_i ++ ){
+
+					var _tmp_obj = json_obj.Cases[_tmp_i];
+					var _tmp_pos = _tmp_obj.Pos;
+					pos_arr.push( _tmp_pos );
+					unique_pos_dict[ _tmp_pos ] = _tmp_obj ;
+
+				}
+
+			}
+
+		}
+
+		if(json_obj.hasOwnProperty('MarkWords')){
+			
+			if(null != json_obj.MarkWords && json_obj.MarkWords.hasOwnProperty('length')){
+				var len_tmp_mark  = json_obj.MarkWords.length;
+
+			var _tmp_i = 0 ;
+			_tmp_i = 0 ;
+			for (;_tmp_i < len_tmp_mark; _tmp_i ++ ){
+
+				var _tmp_obj = json_obj.MarkWords[_tmp_i];
+				var _tmp_pos = _tmp_obj.Pos;
+				pos_arr.push( _tmp_pos );
+				unique_pos_dict[ _tmp_pos ] = _tmp_obj ;
+
+			}
+		}
+		}
+
+		pos_arr.sort(sortNumber);
+
+		$('#id_kanwu > tbody:last-child').append('<tr><td >ID</td><td>错误词</td><td>正确词</td><td>位置</td></tr>');
+
+
+		var new_conent_raw = "";
+		var _tmp_start_pos = 0;
+		var arrayLength = pos_arr.length;
+		for (var i = 0; i < arrayLength; i++) {
+			if( pos_arr[i] >= len_total ){
+				continue;
+			}
+
+
+
+			var str_tmp = content_raw.substring(_tmp_start_pos, pos_arr[i])
+			new_conent_raw = new_conent_raw + str_tmp;
+
+			var _tmp_obj = unique_pos_dict[ pos_arr[i] ];
+
+			$('#id_kanwu > tbody:last-child').append('<tr><td >'+ i +'</td><td>'+ _tmp_obj.Error +'</td><td>' + _tmp_obj.Tips +  '</td><td>' + _tmp_obj.Pos +  '</td></tr>');
+
+
+			var _tmp_sub_len = _tmp_obj.WordsLen;
+			//alert(_tmp_obj.ReviewWords + _tmp_obj.Error);
+			if(_tmp_obj.ReviewWords){
+				new_conent_raw = new_conent_raw + "<span style=\"color:green\"><strong>"+ _tmp_obj.Error +"</strong></span>"
+			}else{
+				new_conent_raw = new_conent_raw + "<span style=\"color:red\"><strong>"+ _tmp_obj.Error +"</strong></span>"	
+			}
+			
+			_tmp_start_pos = pos_arr[i] + _tmp_sub_len;
+		}
+		str_tmp = content_raw.substring(_tmp_start_pos, len_total)
+		new_conent_raw = new_conent_raw + str_tmp;
+
+	  
+
+	 
+ 
+		 
+
+	}
+
+
+	$("#btn_click_submit").click(function(){
+
+		$("#id_kanwu_div").show();
+
+
+		var content_raw ;
+		
+		content_raw = $("textarea#editor").val();
+        if (content_raw === undefined) {
+            content_raw = "";
+        }
+
+		var http_host = "";
+		
+		http_host = "http://​api.cuobiezi.net";
+		//http_host = "http://​127.0.0.1:8234";
+
+		//--------------------------
+		var gb_endpoint = http_host + "/spellcheck/json_check/json_phrase";
+
+		/**
+		字段一："content", 填写需要检查的文字内容 
+		字段二："mode", 固定值，填写："advanced"  预留参数，固定值 字段三："biz_type", 固定值，填写："show"  预留参数，固定值 字段四："username", 固定值，填写："tester"  预留参数，固定值 
+
+		"Cases":[{"Error":"新李","Tips":"\u003c拼音检查\u003e","Sentence":"\u003cp\u003e有一位\u003cstrong\u003e新李\u003c/strong\u003e咨询师说，","ErrInfo":"","Pos":14,"MarkType":44,"ErrLevel":1,"WordsLen":2}
+
+		*/
+
+	var len_total = content_raw.length;
+
+	var un = $("input#username").val();
+        if (un === undefined) {
+            un = "tester";
+        }
+
+	if(un == ""){
+		un = "tester"
+	}
+	var pd = $("input#password").val();
+        if (pd === undefined) {
+            pd = "tester";
+        }
+
+
+	if(pd == ""){
+		pd = "tester"
+	}
+
+
+
+
+
+
+	var json_data = JSON.stringify(
+	{ content : content_raw,
+	            mode: 'advanced',
+	            biz_type: "show",
+	            username: un,
+	            password: pd,
+	    }
+
+		);
+
+  $.ajax({
+    url: gb_endpoint,
+    type: "POST",
+    data: json_data,
+
+    error: function (responseData, textStatus, errorThrown) {
+        alert('POST failed.');
+        alert(responseData);
+        alert(textStatus);
+        alert(errorThrown);
+
+    },
+
+
+    success: function(json_obj){
+
+    	__process_cases(json_obj,len_total,content_raw);
+
+
+    },
+  	})
+
+
+
+	});
+
+
+	</script>
+
+ 
+
+
+</body>
+
+</html>
+
