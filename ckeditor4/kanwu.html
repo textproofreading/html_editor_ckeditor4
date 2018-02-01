@@ -13,8 +13,9 @@
 
 	<script src="./ckeditor.js"></script>
 	<script src="./jcjc_ckeditor.js"></script>
-<script src="./jquery-3.1.1.min.js">
-</script>
+<script src="./jquery-3.1.1.min.js"></script>
+<script src="./jcjc_js_api.js"></script>
+
 
 <style>
 
@@ -160,6 +161,9 @@ function sortNumber(a,b) {
 		//if (json_obj.successed == false){
 		//	return
 		//}
+		if ( isString( json_obj ) ){
+			json_obj = JSON.parse( json_obj );
+		}
 
 		var pos_arr = [];
 		var unique_pos_dict = {};
