@@ -6,16 +6,16 @@
   <meta name="viewport" content="width=device-width">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
- <title>JavaScript API接口客户端-JcJc人工智能错别字检测系统</title>
+ <title>错别字在线检测</title>
 	
 </head>
+
+    <script src="./jquery-3.1.1.min.js"></script>
 
 
 	<script src="./ckeditor.js"></script>
 	<script src="./jcjc_ckeditor.js"></script>
 	<script src="./jcjc_js_api.js"></script>
-
-<script src="./jquery-3.1.1.min.js"></script>
 
 <style>
 
@@ -26,7 +26,7 @@ span {
 </style>
 <body>
 
-<a href="http://www.cuoBiezi.net" target="_bland"><h1>JcJc人工智能错别字检测系统</h1></a>
+<h1>错别字在线检测</h1>
 <!--
 <h2>静态网页客户端---测试版本只能测试500个汉字。</h2>
 -->
@@ -89,9 +89,9 @@ $("#jcjc_cuobiezi_form").on('submit', function(event){
 	return false;
 
 
-  event.preventDefault();
-  var this_ = $(this)
-  var gb_endpoint = this_.attr("data-href")
+//  event.preventDefault();
+//  var this_ = $(this)
+//  var gb_endpoint = this_.attr("data-href")
   
 
 }
@@ -135,13 +135,16 @@ function sortNumber(a,b) {
 
 	function __process_cases(json_obj,len_total,content_raw){
 
-		//if (json_obj.successed == false){
-		//	return
-		//}
+		if (json_obj.successed == false){
+			return
+        }
+        
+       
+
 		if ( isString( json_obj ) ){
 			json_obj = JSON.parse( json_obj );
-		}
-
+        }
+        
 
 		var pos_arr = [];
 		var unique_pos_dict = {};
@@ -192,7 +195,10 @@ function sortNumber(a,b) {
 
 		var new_conent_raw = "";
 		var _tmp_start_pos = 0;
-		var arrayLength = pos_arr.length;
+        var arrayLength = pos_arr.length;
+        
+        
+        
 		for (var i = 0; i < arrayLength; i++) {
 			if( pos_arr[i] >= len_total ){
 				continue;
@@ -241,7 +247,7 @@ function sortNumber(a,b) {
 		var http_host = "";
 		
 		http_host = "http://​api.cuobiezi.net";
-		//http_host = "http://​127.0.0.1:8234";
+		//http_host = "http://​127.0.0.1:8235";
 
 		//--------------------------
 		var gb_endpoint = http_host + "/spellcheck/json_check/json_phrase";
@@ -256,23 +262,30 @@ function sortNumber(a,b) {
 
 	var len_total = content_raw.length;
 
-	var un = $("input#username").val();
+    var un ;
+    var pd;
+    if(false){
+        un = $("input#username").val();
         if (un === undefined) {
             un = "tester";
         }
 
-	if(un == ""){
-		un = "tester"
-	}
-	var pd = $("input#password").val();
+        if(un == ""){
+            un = "tester"
+        }
+    }
+	
+    if(false){
+        pd = $("input#password").val();
         if (pd === undefined) {
             pd = "tester";
         }
-
-
-	if(pd == ""){
-		pd = "tester"
-	}
+        if(pd == ""){
+            pd = "tester"
+        }
+    }
+    un = "kefu0011";
+    pd = "password";
 
 
 
@@ -285,6 +298,7 @@ function sortNumber(a,b) {
 	            biz_type: "show",
 	            username: un,
 	            password: pd,
+                is_allow_cors: true,
 	    }
 
 		);
@@ -305,6 +319,7 @@ function sortNumber(a,b) {
 
     success: function(json_obj){
 
+        
     	__process_cases(json_obj,len_total,content_raw);
 
 
