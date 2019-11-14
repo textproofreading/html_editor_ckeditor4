@@ -7,9 +7,9 @@ $("#jcjc_cuobiezi_form").on('submit', function(event){
 	return false;
 
 
-  event.preventDefault();
-  var this_ = $(this)
-  var gb_endpoint = this_.attr("data-href")
+//   event.preventDefault();
+//   var this_ = $(this)
+//   var gb_endpoint = this_.attr("data-href")
   
 
 }
